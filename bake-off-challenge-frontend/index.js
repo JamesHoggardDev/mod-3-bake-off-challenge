@@ -3,6 +3,7 @@ console.log("🥧");
 let bakesUl = document.querySelector("#bakes-container");
 let detImg = document.querySelector("#detail > img");
 let newBakeForm = document.querySelector("#new-bake-form")
+let scoreForm = document.querySelector("#score-form")
 
 fetch("http://localhost:3000/bakes")
   .then((resp) => resp.json())
@@ -45,7 +46,8 @@ function showDet(e){
     fetch(`http://localhost:3000/bakes/${e.dataset.id}`)
         .then(resp => resp.json())
         .then(bakeObj => {
-
+            
+            scoreForm.dataset.id = bakeObj.id
             detImg.src = bakeObj.image_url
             detImg.alt = bakeObj.name
 
@@ -56,9 +58,6 @@ function showDet(e){
             detDesc.textContent = bakeObj.description;
         })
 }
-
-// When this form is submitted, a new bake should be created 
-//in the backend and added to the list of bakes displayed in the sidebar.
 
 newBakeForm.addEventListener('submit', event => {
     event.preventDefault()
@@ -82,6 +81,36 @@ newBakeForm.addEventListener('submit', event => {
     })
     .then(resp => resp.json())
     .then(bakeObj => putOnBakeList(bakeObj))
-    
+
     newBakeForm.reset()
 })
+
+//In the detail view, when a user enters a score and
+// submits, the score should be saved in the backend and persisted in the frontend.
+//fetch, patch, need .thens
+
+scoreForm.addEventListener('submit', event => {
+    event.preventDefault()
+
+    fetch(`http://localhost:3000/bakes/${event.target.dataset.id}/ratings`, {
+        method: "POST",
+        headers:
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 699a9ff1-88ca-4d77-a26e-e4bc31cfc261"  
+        },
+        body: JSON.stringify({
+            score: event.target.score.value
+        })
+
+    })
+
+    scoreForm.reset()
+})
+
+
+
+// function setScore(){
+
+// }
+
