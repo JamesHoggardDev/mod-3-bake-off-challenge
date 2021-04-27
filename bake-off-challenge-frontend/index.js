@@ -4,6 +4,7 @@ let bakesUl = document.querySelector("#bakes-container");
 let detImg = document.querySelector("#detail > img");
 let newBakeForm = document.querySelector("#new-bake-form")
 let scoreForm = document.querySelector("#score-form")
+let scoreInp = document.querySelector("#score-form > input[type=number]:nth-child(1)")
 
 fetch("http://localhost:3000/bakes")
   .then((resp) => resp.json())
@@ -35,6 +36,7 @@ function putOnBakeList(bakeObj, index) {
 
   bakeLi.append(detailH2);
   bakesUl.append(bakeLi);
+  
 }
 
 bakesUl.addEventListener("click", (event) => {
@@ -56,6 +58,8 @@ function showDet(e){
 
             let detDesc = document.querySelector("#detail > p");
             detDesc.textContent = bakeObj.description;
+
+            scoreInp.value = bakeObj.score
         })
 }
 
@@ -65,10 +69,8 @@ newBakeForm.addEventListener('submit', event => {
     let newBakeObj = {
         name: event.target.name.value,
         image_url: event.target.image_url.value,
-        description: event.target.description.value,
-        score: 0
+        description: event.target.description.value
     }
-
 
     fetch('http://localhost:3000/bakes', {
         method: "POST",
@@ -84,11 +86,7 @@ newBakeForm.addEventListener('submit', event => {
 
     newBakeForm.reset()
 })
-
-//In the detail view, when a user enters a score and
-// submits, the score should be saved in the backend and persisted in the frontend.
-//fetch, patch, need .thens
-
+//D4
 scoreForm.addEventListener('submit', event => {
     event.preventDefault()
 
@@ -97,20 +95,13 @@ scoreForm.addEventListener('submit', event => {
         headers:
         {
           "Content-Type": "application/json",
-          "Authorization": "Bearer 699a9ff1-88ca-4d77-a26e-e4bc31cfc261"  
+          "Authorization": "Bearer 699a9ff1-88ca-4d77-a26e-e4bc31cfc261"
         },
         body: JSON.stringify({
             score: event.target.score.value
         })
-
     })
-
-    scoreForm.reset()
 })
 
 
-
-// function setScore(){
-
-// }
 
